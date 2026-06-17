@@ -262,6 +262,50 @@
   .gloss-item span{color:var(--muted)}
   @media(max-width:700px){.gloss-grid{grid-template-columns:1fr}}
 
+  /* DECISÃO INTERATIVA INDIVIDUAL */
+  .dec-overlay{position:fixed;inset:0;background:rgba(15,42,71,.55);z-index:320;display:none;
+    align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+  .dec-overlay.open{display:flex}
+  .dec-panel{background:var(--white);border-radius:16px;max-width:680px;width:100%;
+    box-shadow:0 24px 64px rgba(15,42,71,.4);overflow:hidden;margin:auto}
+  .dec-head{background:var(--navy);color:#fff;padding:1.1rem 1.4rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+  .dec-head .proc{font-family:var(--mono);font-size:12px;color:var(--gold-soft);font-weight:600}
+  .dec-head h3{font-size:16px;font-weight:800;margin-top:.2rem}
+  .dec-head .x{background:none;border:none;color:#9FB3C8;font-size:22px;cursor:pointer;line-height:1;flex-shrink:0}
+  .dec-body{padding:1.4rem}
+  .dec-caso{font-size:13.5px;line-height:1.65;color:#33404E;background:var(--paper);border:1px solid var(--line);
+    border-radius:11px;padding:1rem 1.1rem;margin-bottom:1.2rem}
+  .dec-caso b{color:var(--navy)}
+  .dec-q{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:.7rem}
+  .dec-opts{display:flex;flex-direction:column;gap:.6rem}
+  .dec-opt{display:flex;align-items:center;gap:.7rem;width:100%;text-align:left;font-family:var(--sans);
+    font-size:14px;font-weight:600;color:var(--navy);background:var(--white);border:1.5px solid var(--line);
+    border-radius:11px;padding:.85rem 1.1rem;cursor:pointer;transition:all .15s}
+  .dec-opt:hover{border-color:var(--gold);transform:translateY(-1px)}
+  .dec-opt .dot{width:13px;height:13px;border-radius:50%;flex-shrink:0;border:2px solid currentColor}
+  .dec-opt.adm{color:var(--green)} .dec-opt.neg{color:var(--red)} .dec-opt.sob{color:var(--amber)}
+  .dec-opt.sel{background:#FBF6E8;border-color:var(--gold)}
+  .dec-result{display:none;margin-top:1.3rem}
+  .dec-result.show{display:block}
+  .dec-compare{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+  @media(max-width:560px){.dec-compare{grid-template-columns:1fr}}
+  .dec-box{border-radius:11px;padding:.9rem 1rem;border:1px solid var(--line)}
+  .dec-box .lb{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.35rem}
+  .dec-box .vl{font-size:15px;font-weight:800}
+  .dec-box.you{background:#EEF3F8;border-color:#CBD8E6}
+  .dec-box.ia{background:var(--paper)}
+  .dec-verdict{border-radius:11px;padding:.9rem 1.1rem;font-size:13px;line-height:1.6;margin-bottom:.5rem}
+  .dec-verdict.match{background:var(--green-bg);border:1px solid #BFE3CD}
+  .dec-verdict.diff{background:#FBF3DC;border:1px solid #EAD9A8}
+  .dec-verdict b{font-weight:800}
+  .dec-just{font-size:12.5px;line-height:1.6;color:#33404E;background:var(--white);border:1px dashed var(--line);
+    border-radius:9px;padding:.8rem 1rem;margin-top:.6rem}
+  .dec-just .hd{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:.3rem}
+  .dec-foot{font-size:11px;color:var(--muted);margin-top:1rem;line-height:1.5;border-top:1px solid var(--line);padding-top:.8rem}
+  .row.done-mine{background:#F6F9F4}
+  .row .mine-tag{font-family:var(--mono);font-size:10px;font-weight:600;padding:.15rem .5rem;border-radius:4px;margin-left:.4rem}
+  .mine-tag.adm{background:var(--green-bg);color:var(--green)} .mine-tag.neg{background:var(--red-bg);color:var(--red)} .mine-tag.sob{background:#FBF3DC;color:var(--amber)}
+
   /* QR CODE */
   .qr-btn{position:fixed;bottom:22px;right:170px;z-index:150;background:var(--gold);color:var(--navy);
     border:1px solid var(--gold);border-radius:30px;padding:.7rem 1.1rem;font-family:var(--sans);font-size:13px;
@@ -323,7 +367,7 @@
   <div class="page-head">
     <div>
       <div class="page-title">Fila de admissibilidade — Recursos Especiais e AREsps</div>
-      <div class="page-desc">A IA assistiva (Módulo 1) pré-analisa cada recurso recebido e sugere uma pontuação de admissibilidade com fundamentação. <strong>A decisão é sempre do analista e do vice-presidente</strong> (Res. CNJ 615/2025).<br><span style="font-size:12px"><b>Como ler o score</b> (refere-se ao recurso, não ao tribunal): <span style="color:var(--red);font-weight:600">0–34 fortes óbices → tende à negativa de seguimento</span> · <span style="color:var(--amber);font-weight:600">35–59 zona de fronteira → análise humana reforçada</span> · <span style="color:var(--green);font-weight:600">60–100 requisitos presentes → tende à admissão e remessa ao STJ</span>.<br><i>A tabela abaixo mostra 7 recursos de exemplo dos 47 pendentes hoje; os totais dos cartões referem-se ao dia. Dados fictícios para demonstração.</i></span></div>
+      <div class="page-desc">A IA assistiva (Módulo 1) pré-analisa cada recurso recebido e sugere uma pontuação de admissibilidade com fundamentação. <strong>A decisão é sempre do analista e do vice-presidente</strong> (Res. CNJ 615/2025).<br><span style="font-size:12px"><b>Como ler o score</b> (refere-se ao recurso, não ao tribunal): <span style="color:var(--red);font-weight:600">0–34 fortes óbices → tende à negativa de seguimento</span> · <span style="color:var(--amber);font-weight:600">35–59 zona de fronteira → análise humana reforçada</span> · <span style="color:var(--green);font-weight:600">60–100 requisitos presentes → tende à admissão e remessa ao STJ</span>.<br><i>A tabela abaixo mostra 7 recursos de exemplo dos 47 pendentes hoje; os totais dos cartões referem-se ao dia. Dados fictícios para demonstração.</i><br><b style="color:var(--gold)">👆 Clique em qualquer recurso para assumir o papel de analista: decida primeiro e compare sua decisão com a da IA.</b></span></div>
     </div>
   </div>
 
@@ -611,6 +655,32 @@
   </div>
 </div>
 
+<div class="dec-overlay" id="dec" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="dec-panel">
+    <div class="dec-head">
+      <div>
+        <div class="proc" id="dec-proc"></div>
+        <h3 id="dec-title"></h3>
+      </div>
+      <button class="x" onclick="document.getElementById('dec').classList.remove('open')">✕</button>
+    </div>
+    <div class="dec-body">
+      <div class="dec-caso" id="dec-caso"></div>
+      <div class="dec-q">Como analista da Vice-Presidência, qual é o seu juízo de admissibilidade?</div>
+      <div class="dec-opts" id="dec-opts"></div>
+      <div class="dec-result" id="dec-result">
+        <div class="dec-compare">
+          <div class="dec-box you"><div class="lb">Sua decisão</div><div class="vl" id="dec-you"></div></div>
+          <div class="dec-box ia"><div class="lb">🤖 Sugestão da IA (Módulo 1)</div><div class="vl" id="dec-ia"></div></div>
+        </div>
+        <div class="dec-verdict" id="dec-verdict"></div>
+        <div class="dec-just"><div class="hd">Fundamentação do sistema</div><span id="dec-just"></span></div>
+        <div class="dec-foot">A IA é assistiva: sugere, nunca decide. A decisão é sempre do agente competente, com trilha de auditoria (Res. CNJ 615/2025). Sua escolha alimentaria o Feedback Loop (Módulo 6), que faz a rede federativa aprender.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <button class="qr-btn" onclick="document.getElementById('qr').classList.add('open')">📱 QR para a turma</button>
 <div class="qr-overlay" id="qr" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="qr-panel">
@@ -643,13 +713,13 @@
 <script>
 // ============ DADOS SIMULADOS ============
 const recursos = [
-  {n:"0712345-67.2025.8.07.0001", cls:"resp", mat:"Civil — expurgos inflacionários", score:17, prec:true,  st:"pend"},
-  {n:"0708821-43.2025.8.07.0004", cls:"aresp", mat:"Consumidor — plano de saúde", score:22, prec:true,  st:"pend"},
-  {n:"0701234-11.2026.8.07.0009", cls:"resp", mat:"Tributário — ISS sobre software", score:78, prec:false, st:"pend"},
-  {n:"0719876-02.2025.8.07.0015", cls:"aresp", mat:"Civil — responsabilidade médica", score:31, prec:false, st:"pend"},
-  {n:"0703456-78.2026.8.07.0001", cls:"resp", mat:"Administrativo — concurso público", score:64, prec:false, st:"pend"},
-  {n:"0715555-90.2025.8.07.0007", cls:"aresp", mat:"Consumidor — telefonia (Tema 989)", score:12, prec:true,  st:"pend"},
-  {n:"0709090-33.2026.8.07.0002", cls:"resp", mat:"Empresarial — recuperação judicial", score:55, prec:false, st:"pend"},
+  {n:"0712345-67.2025.8.07.0001", cls:"resp", mat:"Civil — expurgos inflacionários", score:17, prec:true,  st:"pend", ia:"negar", just:"Acumula três óbices de alta confiança: ausência de prequestionamento (Súm. 282/STF), reexame de prova (Súm. 7/STJ) e tese já pacificada no Tema 1.234/STJ. Recurso fadado à inadmissão — a negativa na origem evita ~2-3 anos de tramitação inútil."},
+  {n:"0708821-43.2025.8.07.0004", cls:"aresp", mat:"Consumidor — plano de saúde", score:22, prec:true,  st:"pend", ia:"sobrestar", just:"Matéria idêntica à afetada no Tema 1.198/STJ, com julgamento pendente e suspensão nacional determinada. O sobrestamento na origem (CPC, art. 1.030, III) é o caminho — remeter agora apenas engrossaria a pilha do STJ."},
+  {n:"0701234-11.2026.8.07.0009", cls:"resp", mat:"Tributário — ISS sobre software", score:78, prec:false, st:"pend", ia:"admitir", just:"Requisitos formais presentes, questão exclusivamente de direito, divergência jurisprudencial demonstrada e sem precedente qualificado. É o recurso que merece subir ao STJ — filtrar bem não é barrar tudo."},
+  {n:"0719876-02.2025.8.07.0015", cls:"aresp", mat:"Civil — responsabilidade médica", score:31, prec:false, st:"pend", ia:"negar", just:"Score baixo: o recurso busca rediscutir matéria fático-probatória (incidência da Súm. 7/STJ). Sem questão de direito destacável, a tendência é a negativa de seguimento."},
+  {n:"0703456-78.2026.8.07.0001", cls:"resp", mat:"Administrativo — concurso público", score:64, prec:false, st:"pend", ia:"admitir", just:"Questão de direito sobre legalidade de critério de edital, com prequestionamento e divergência demonstrada. Sem óbice sumular detectado — tende à admissão."},
+  {n:"0715555-90.2025.8.07.0007", cls:"aresp", mat:"Consumidor — telefonia (Tema 989)", score:12, prec:true,  st:"pend", ia:"negar", just:"Tese diretamente contrária ao Tema 989/STJ, já julgado em repetitivo. Cabe juízo de retratação ou negativa de seguimento na origem (CPC, art. 1.030, I)."},
+  {n:"0709090-33.2026.8.07.0002", cls:"resp", mat:"Empresarial — recuperação judicial", score:55, prec:false, st:"pend", ia:"sobrestar", just:"Zona de fronteira: há questão de direito relevante, mas parte da controvérsia tangencia tema em afetação. Recomenda-se análise humana reforçada antes de decidir entre admitir e sobrestar."},
 ];
 
 const tribunais = [
@@ -668,6 +738,67 @@ const manual = [
   {sec:"§ 3.2", t:"Óbice da Súmula 7/STJ — reexame de provas", d:"Distinção entre revaloração jurídica (admissível) e reexame fático (inadmissível), com 22 pares de casos contrastantes extraídos de decisões reais do STJ.", u:"v.3.2 · atualizado em 18/05/2026"},
 ];
 
+// ============ DECISÃO INTERATIVA INDIVIDUAL ============
+// Guardadas só na memória da sessão deste navegador — individual, sem servidor.
+const myDecisions = {};
+const LABELS = { admitir: "Admitir e remeter", negar: "Negar seguimento", sobrestar: "Sobrestar / aguardar" };
+const CASO_TXT = {
+  "0712345-67.2025.8.07.0001": "Recurso especial <b>sem prequestionamento</b> da questão federal; as razões pedem reexame do laudo pericial; a tese central coincide com o <b>Tema 1.234/STJ</b>, já julgado em repetitivo.",
+  "0708821-43.2025.8.07.0004": "Agravo em recurso especial sobre cobertura de plano de saúde — matéria <b>idêntica à afetada no Tema 1.198/STJ</b>, com julgamento pendente e <b>suspensão nacional</b> determinada.",
+  "0701234-11.2026.8.07.0009": "Recurso tempestivo, questão federal <b>devidamente prequestionada</b>, controvérsia puramente de direito, divergência demonstrada e <b>sem precedente qualificado</b> sobre o ponto.",
+  "0719876-02.2025.8.07.0015": "As razões recursais impugnam a <b>valoração da prova pericial</b> sobre responsabilidade médica, sem destacar questão de direito autônoma (possível incidência da Súmula 7/STJ).",
+  "0703456-78.2026.8.07.0001": "Discussão de direito sobre a <b>legalidade de critério de edital</b> de concurso público, com prequestionamento e divergência jurisprudencial demonstrada; sem óbice sumular aparente.",
+  "0715555-90.2025.8.07.0007": "A tese sustentada é <b>diretamente contrária ao Tema 989/STJ</b>, já julgado sob o rito dos repetitivos. Cabe juízo de retratação ou negativa na origem.",
+  "0709090-33.2026.8.07.0002": "Recuperação judicial com questão de direito relevante, mas parte da controvérsia <b>tangencia tema em afetação</b> — caso de fronteira que pede análise humana reforçada."
+};
+
+let decCurrent = null;
+function openDecision(r){
+  decCurrent = r;
+  document.getElementById("dec-proc").textContent = (r.cls === "resp" ? "REsp" : "AREsp") + " · " + r.n;
+  document.getElementById("dec-title").textContent = r.mat;
+  document.getElementById("dec-caso").innerHTML = CASO_TXT[r.n] || r.mat;
+  const opts = document.getElementById("dec-opts");
+  opts.innerHTML = "";
+  [["admitir","adm","Admitir e remeter ao STJ"],["negar","neg","Negar seguimento na origem"],["sobrestar","sob","Sobrestar / aguardar precedente"]]
+    .forEach(([k, c, label]) => {
+      const b = document.createElement("button");
+      b.className = "dec-opt " + c;
+      b.innerHTML = `<span class="dot"></span>${label}`;
+      b.onclick = () => pickDecision(k, b);
+      opts.appendChild(b);
+    });
+  const res = document.getElementById("dec-result");
+  res.classList.remove("show");
+  // se já decidiu antes, mostra o resultado guardado
+  if (myDecisions[r.n]) { showDecisionResult(r, myDecisions[r.n], true); }
+  document.getElementById("dec").classList.add("open");
+}
+
+function pickDecision(k, btn){
+  document.querySelectorAll("#dec-opts .dec-opt").forEach(b => b.classList.remove("sel"));
+  btn.classList.add("sel");
+  myDecisions[decCurrent.n] = k;
+  showDecisionResult(decCurrent, k, false);
+  toast("Decisão registrada com trilha de auditoria · alimenta o Módulo 6");
+  renderQueue(document.querySelector('.chip.active')?.dataset.f || "all");
+}
+
+function showDecisionResult(r, k, restored){
+  const match = k === r.ia;
+  document.getElementById("dec-you").textContent = LABELS[k];
+  document.getElementById("dec-you").style.color = k === "admitir" ? "var(--green)" : k === "negar" ? "var(--red)" : "var(--amber)";
+  document.getElementById("dec-ia").textContent = LABELS[r.ia] + " (score " + r.score + "/100)";
+  document.getElementById("dec-ia").style.color = r.ia === "admitir" ? "var(--green)" : r.ia === "negar" ? "var(--red)" : "var(--amber)";
+  const v = document.getElementById("dec-verdict");
+  v.className = "dec-verdict " + (match ? "match" : "diff");
+  v.innerHTML = match
+    ? `✓ <b>Sua decisão coincidiu com a sugestão do sistema.</b>${restored ? " (decisão já registrada)" : ""}`
+    : `↔ <b>Você decidiu "${LABELS[k]}" e o sistema sugeria "${LABELS[r.ia]}".</b> Divergir não é errar — a decisão é sempre humana. Veja o raciocínio do sistema:`;
+  document.getElementById("dec-just").textContent = r.just;
+  document.getElementById("dec-result").classList.add("show");
+}
+
 // ============ RENDER FILA ============
 function renderQueue(filter = "all"){
   const tb = document.getElementById('queue');
@@ -677,14 +808,18 @@ function renderQueue(filter = "all"){
       const cls = r.score >= 60 ? "s-high" : r.score >= 35 ? "s-mid" : "s-low";
       const tr = document.createElement('tr');
       tr.className = "row";
+      const mine = myDecisions[r.n];
+      const tagCls = mine === "admitir" ? "adm" : mine === "negar" ? "neg" : "sob";
+      const tagTxt = mine === "admitir" ? "Você: admitir" : mine === "negar" ? "Você: negar" : mine === "sobrestar" ? "Você: sobrestar" : "";
+      tr.className = "row" + (mine ? " done-mine" : "");
       tr.innerHTML = `
-        <td class="proc">${r.n}</td>
+        <td class="proc">${r.n}${mine ? `<span class="mine-tag ${tagCls}">${tagTxt}</span>` : ""}</td>
         <td><span class="tag ${r.cls}">${r.cls === "resp" ? "REsp" : "AREsp"}</span></td>
         <td>${r.mat}</td>
         <td><div class="score ${cls}"><div class="score-bar"><div class="score-fill" style="width:${r.score}%"></div></div><div class="score-num">${r.score}</div></div></td>
         <td>${r.prec ? '<span class="alert-dot prec">Tese pacificada</span>' : '<span class="alert-dot none">—</span>'}</td>
-        <td><span class="status ${r.st}">${r.st === "pend" ? "Pendente" : "Decidido"}</span></td>`;
-      tr.onclick = () => openAnalysis(r);
+        <td><span class="status ${mine ? 'decided' : r.st}">${mine ? "Você decidiu" : "Pendente"}</span></td>`;
+      tr.onclick = () => openDecision(r);
       tb.appendChild(tr);
     });
 }
