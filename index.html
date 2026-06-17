@@ -159,8 +159,26 @@
   .btn.ghost{background:#fff;color:var(--navy);border-color:var(--line)}
   .btn.ghost:hover{border-color:var(--navy)}
   .btn.danger{background:var(--red);color:#fff}
+  .btn[data-k]{opacity:.55;transition:all .15s}
+  .btn[data-k]:hover{opacity:1;transform:translateY(-1px)}
+  .btn[data-k].chosen{opacity:1;box-shadow:0 0 0 3px var(--gold),0 4px 12px rgba(15,42,71,.2)}
+  .btn[data-k].dimmed{opacity:.3}
   .human-note{font-size:11px;color:var(--muted);padding:.6rem 1.25rem 1rem;background:#FCFBF7;display:flex;gap:.4rem;align-items:center}
   .human-note::before{content:'🛡';font-size:13px}
+
+  .dec-compare-inline{display:none;flex-direction:column;gap:.75rem;padding:1.1rem 1.25rem 1.3rem}
+  .dec-compare-inline.show{display:flex}
+  .dci-boxes{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+  @media(max-width:560px){.dci-boxes{grid-template-columns:1fr}}
+  .dci-box{border-radius:11px;padding:.85rem 1rem;border:1px solid var(--line)}
+  .dci-box .lb{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.35rem}
+  .dci-box .vl{font-size:15px;font-weight:800}
+  .dci-box.you{background:#EEF3F8;border-color:#CBD8E6}
+  .dci-box.ia{background:var(--paper)}
+  .dci-verdict{border-radius:11px;padding:.9rem 1.1rem;font-size:13px;line-height:1.6}
+  .dci-verdict.match{background:var(--green-bg);border:1px solid #BFE3CD}
+  .dci-verdict.diff{background:#FBF3DC;border:1px solid #EAD9A8}
+  .dci-verdict b{font-weight:800}
 
   .decided{background:var(--green-bg);border:1px solid #BFE3CD;color:var(--green);font-weight:700;font-size:13.5px;
     padding:1rem 1.25rem;border-radius:10px;display:none;align-items:center;gap:.6rem}
@@ -303,8 +321,10 @@
   .dec-just .hd{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:.3rem}
   .dec-foot{font-size:11px;color:var(--muted);margin-top:1rem;line-height:1.5;border-top:1px solid var(--line);padding-top:.8rem}
   .row.done-mine{background:#F6F9F4}
-  .row .mine-tag{font-family:var(--mono);font-size:10px;font-weight:600;padding:.15rem .5rem;border-radius:4px;margin-left:.4rem}
-  .mine-tag.adm{background:var(--green-bg);color:var(--green)} .mine-tag.neg{background:var(--red-bg);color:var(--red)} .mine-tag.sob{background:#FBF3DC;color:var(--amber)}
+  .status-dec{font-size:11px;font-weight:700;padding:.25rem .6rem;border-radius:5px;white-space:nowrap}
+  .status-dec.adm{background:var(--green-bg);color:var(--green)}
+  .status-dec.neg{background:var(--red-bg);color:var(--red)}
+  .status-dec.sob{background:#FBF3DC;color:var(--amber)}
 
   /* QR CODE */
   .qr-btn{position:fixed;bottom:22px;right:170px;z-index:150;background:var(--gold);color:var(--navy);
@@ -385,6 +405,7 @@
         <button class="chip active" data-f="all">Todos</button>
         <button class="chip" data-f="prec">Com alerta de precedente</button>
         <button class="chip" data-f="low">Score baixo</button>
+        <button class="chip" id="reset-chip" onclick="resetDecisions()" style="margin-left:auto;border-color:var(--gold);color:var(--gold)">↺ Recomeçar</button>
       </div>
     </div>
     <table>
@@ -409,18 +430,18 @@
   <div class="analysis-grid">
     <div>
       <div class="a-card">
-        <div class="big-score">
+        <div class="big-score" id="big-score">
           <div class="ring">
             <svg width="84" height="84">
               <circle cx="42" cy="42" r="36" fill="none" stroke="#F0DBDB" stroke-width="8"/>
-              <circle cx="42" cy="42" r="36" fill="none" stroke="#A82A2A" stroke-width="8"
-                stroke-dasharray="226" stroke-dashoffset="187" stroke-linecap="round"/>
+              <circle id="ring-arc" cx="42" cy="42" r="36" fill="none" stroke="#A82A2A" stroke-width="8"
+                stroke-dasharray="226" stroke-dashoffset="187" stroke-linecap="round" transform="rotate(-90 42 42)"/>
             </svg>
-            <div class="num">17</div>
+            <div class="num" id="ring-num">17</div>
           </div>
           <div class="txt">
-            <strong>Fortes indícios de inadmissibilidade</strong>
-            <span>Score de admissibilidade <b>17/100</b> — escala em que 0 = óbices intransponíveis e 100 = requisitos plenamente atendidos. O modelo identificou 3 óbices com alta confiança. Sugestão preliminar: <b>negativa de seguimento</b> com fundamento no art. 1.030, V, do CPC. Revisão humana obrigatória.</span>
+            <strong id="score-head">Fortes indícios de inadmissibilidade</strong>
+            <span id="score-desc">O score de admissibilidade mede, de 0 a 100, o quanto <b>este recurso</b> preenche os requisitos para subir ao STJ — não avalia o tribunal. Faixas: <b style="color:var(--red)">0–34</b> fortes óbices (tende à negativa) · <b style="color:var(--amber)">35–59</b> fronteira (análise reforçada) · <b style="color:var(--green)">60–100</b> requisitos presentes (tende à admissão).</span>
           </div>
         </div>
         <div class="a-card-head">
@@ -434,14 +455,19 @@
           <div class="crit ok"><div class="ic">✓</div><div><b>Tempestividade</b><small>Recurso interposto no 12º dia útil. Regular.</small></div></div>
           <div class="crit warn"><div class="ic">!</div><div><b>Relevância da questão federal (EC 125)</b> <span class="ref">módulo preparatório — inativo</span><small>Critério aguarda regulamentação (PL 3.804/2023). Quando ativo, este recurso seria também submetido ao filtro de relevância.</small></div></div>
         </div>
-        <div class="actions">
-          <button class="btn danger" onclick="decide('Negativa de seguimento registrada (art. 1.030, V, CPC). Devolutiva alimenta o Módulo 6.')">Negar seguimento</button>
-          <button class="btn primary" onclick="decide('Recurso admitido e remetido ao STJ. O desfecho retornará via Feedback Loop.')">Admitir e remeter</button>
-          <button class="btn ghost" onclick="decide('Processo sobrestado — aguardando julgamento do Tema 1.234.')">Sobrestar</button>
-          <button class="btn ghost" onclick="decide('Encaminhado ao órgão julgador para juízo de retratação (art. 1.030, II).')">Juízo de retratação</button>
+        <div class="actions" id="dec-actions">
+          <button class="btn danger" data-k="negar" onclick="decide('negar', this)">Negar seguimento</button>
+          <button class="btn primary" data-k="admitir" onclick="decide('admitir', this)">Admitir e remeter</button>
+          <button class="btn ghost" data-k="sobrestar" onclick="decide('sobrestar', this)">Sobrestar</button>
         </div>
         <div class="human-note">Supervisão humana obrigatória — a sugestão da IA não produz efeitos sem decisão do agente competente (Res. CNJ 615/2025, art. 19). Trilha de auditoria ativa.</div>
-        <div class="decided" id="decided">✓ <span id="decided-txt"></span></div>
+        <div class="dec-compare-inline" id="decided">
+          <div class="dci-boxes">
+            <div class="dci-box you"><div class="lb">⚖️ Sua decisão</div><div class="vl" id="dci-you"></div></div>
+            <div class="dci-box ia"><div class="lb">🤖 Sugestão da IA</div><div class="vl" id="dci-ia"></div></div>
+          </div>
+          <div class="dci-verdict" id="dci-verdict"></div>
+        </div>
       </div>
     </div>
 
@@ -670,12 +696,12 @@
       <div class="dec-opts" id="dec-opts"></div>
       <div class="dec-result" id="dec-result">
         <div class="dec-compare">
-          <div class="dec-box you"><div class="lb">Sua decisão</div><div class="vl" id="dec-you"></div></div>
+          <div class="dec-box you"><div class="lb">⚖️ Sua decisão</div><div class="vl" id="dec-you"></div></div>
           <div class="dec-box ia"><div class="lb">🤖 Sugestão da IA (Módulo 1)</div><div class="vl" id="dec-ia"></div></div>
         </div>
         <div class="dec-verdict" id="dec-verdict"></div>
         <div class="dec-just"><div class="hd">Fundamentação do sistema</div><span id="dec-just"></span></div>
-        <div class="dec-foot">A IA é assistiva: sugere, nunca decide. A decisão é sempre do agente competente, com trilha de auditoria (Res. CNJ 615/2025). Sua escolha alimentaria o Feedback Loop (Módulo 6), que faz a rede federativa aprender.</div>
+        <div class="dec-foot">A IA é assistiva: sugere, nunca decide. A decisão é sempre do agente competente, com trilha de auditoria (Res. CNJ 615/2025). Sua escolha alimenta o Feedback Loop (Módulo 6), que faz a rede federativa aprender.</div>
       </div>
     </div>
   </div>
@@ -740,7 +766,23 @@ const manual = [
 
 // ============ DECISÃO INTERATIVA INDIVIDUAL ============
 // Guardadas só na memória da sessão deste navegador — individual, sem servidor.
-const myDecisions = {};
+// Decisões individuais — persistem entre sessões via localStorage (funciona no GitHub Pages).
+let myDecisions = {};
+try {
+  const saved = localStorage.getItem("sinapse_decisoes");
+  if (saved) myDecisions = JSON.parse(saved);
+} catch (e) { myDecisions = {}; }
+function saveDecisions(){
+  try { localStorage.setItem("sinapse_decisoes", JSON.stringify(myDecisions)); } catch (e) {}
+}
+function resetDecisions(){
+  if (Object.keys(myDecisions).length === 0) { toast("Nenhuma decisão registrada ainda."); return; }
+  if (!confirm("Recomeçar a dinâmica? Isso apaga todas as suas decisões registradas.")) return;
+  myDecisions = {};
+  saveDecisions();
+  renderQueue(document.querySelector('.chip.active')?.dataset.f || "all");
+  toast("Decisões apagadas. Fila reiniciada.");
+}
 const LABELS = { admitir: "Admitir e remeter", negar: "Negar seguimento", sobrestar: "Sobrestar / aguardar" };
 const CASO_TXT = {
   "0712345-67.2025.8.07.0001": "Recurso especial <b>sem prequestionamento</b> da questão federal; as razões pedem reexame do laudo pericial; a tese central coincide com o <b>Tema 1.234/STJ</b>, já julgado em repetitivo.",
@@ -753,52 +795,6 @@ const CASO_TXT = {
 };
 
 let decCurrent = null;
-function openDecision(r){
-  decCurrent = r;
-  document.getElementById("dec-proc").textContent = (r.cls === "resp" ? "REsp" : "AREsp") + " · " + r.n;
-  document.getElementById("dec-title").textContent = r.mat;
-  document.getElementById("dec-caso").innerHTML = CASO_TXT[r.n] || r.mat;
-  const opts = document.getElementById("dec-opts");
-  opts.innerHTML = "";
-  [["admitir","adm","Admitir e remeter ao STJ"],["negar","neg","Negar seguimento na origem"],["sobrestar","sob","Sobrestar / aguardar precedente"]]
-    .forEach(([k, c, label]) => {
-      const b = document.createElement("button");
-      b.className = "dec-opt " + c;
-      b.innerHTML = `<span class="dot"></span>${label}`;
-      b.onclick = () => pickDecision(k, b);
-      opts.appendChild(b);
-    });
-  const res = document.getElementById("dec-result");
-  res.classList.remove("show");
-  // se já decidiu antes, mostra o resultado guardado
-  if (myDecisions[r.n]) { showDecisionResult(r, myDecisions[r.n], true); }
-  document.getElementById("dec").classList.add("open");
-}
-
-function pickDecision(k, btn){
-  document.querySelectorAll("#dec-opts .dec-opt").forEach(b => b.classList.remove("sel"));
-  btn.classList.add("sel");
-  myDecisions[decCurrent.n] = k;
-  showDecisionResult(decCurrent, k, false);
-  toast("Decisão registrada com trilha de auditoria · alimenta o Módulo 6");
-  renderQueue(document.querySelector('.chip.active')?.dataset.f || "all");
-}
-
-function showDecisionResult(r, k, restored){
-  const match = k === r.ia;
-  document.getElementById("dec-you").textContent = LABELS[k];
-  document.getElementById("dec-you").style.color = k === "admitir" ? "var(--green)" : k === "negar" ? "var(--red)" : "var(--amber)";
-  document.getElementById("dec-ia").textContent = LABELS[r.ia] + " (score " + r.score + "/100)";
-  document.getElementById("dec-ia").style.color = r.ia === "admitir" ? "var(--green)" : r.ia === "negar" ? "var(--red)" : "var(--amber)";
-  const v = document.getElementById("dec-verdict");
-  v.className = "dec-verdict " + (match ? "match" : "diff");
-  v.innerHTML = match
-    ? `✓ <b>Sua decisão coincidiu com a sugestão do sistema.</b>${restored ? " (decisão já registrada)" : ""}`
-    : `↔ <b>Você decidiu "${LABELS[k]}" e o sistema sugeria "${LABELS[r.ia]}".</b> Divergir não é errar — a decisão é sempre humana. Veja o raciocínio do sistema:`;
-  document.getElementById("dec-just").textContent = r.just;
-  document.getElementById("dec-result").classList.add("show");
-}
-
 // ============ RENDER FILA ============
 function renderQueue(filter = "all"){
   const tb = document.getElementById('queue');
@@ -807,26 +803,25 @@ function renderQueue(filter = "all"){
     .forEach(r => {
       const cls = r.score >= 60 ? "s-high" : r.score >= 35 ? "s-mid" : "s-low";
       const tr = document.createElement('tr');
-      tr.className = "row";
       const mine = myDecisions[r.n];
       const tagCls = mine === "admitir" ? "adm" : mine === "negar" ? "neg" : "sob";
-      const tagTxt = mine === "admitir" ? "Você: admitir" : mine === "negar" ? "Você: negar" : mine === "sobrestar" ? "Você: sobrestar" : "";
+      const statusTxt = mine === "admitir" ? "Admitiu" : mine === "negar" ? "Negou" : mine === "sobrestar" ? "Sobrestou" : "";
       tr.className = "row" + (mine ? " done-mine" : "");
       tr.innerHTML = `
-        <td class="proc">${r.n}${mine ? `<span class="mine-tag ${tagCls}">${tagTxt}</span>` : ""}</td>
+        <td class="proc">${r.n}</td>
         <td><span class="tag ${r.cls}">${r.cls === "resp" ? "REsp" : "AREsp"}</span></td>
         <td>${r.mat}</td>
         <td><div class="score ${cls}"><div class="score-bar"><div class="score-fill" style="width:${r.score}%"></div></div><div class="score-num">${r.score}</div></div></td>
         <td>${r.prec ? '<span class="alert-dot prec">Tese pacificada</span>' : '<span class="alert-dot none">—</span>'}</td>
-        <td><span class="status ${mine ? 'decided' : r.st}">${mine ? "Você decidiu" : "Pendente"}</span></td>`;
+        <td>${mine ? `<span class="status-dec ${tagCls}">✓ ${statusTxt}</span>` : '<span class="status pend">Pendente</span>'}</td>`;
       tr.onclick = () => openDecision(r);
       tb.appendChild(tr);
     });
 }
 renderQueue();
 
-document.querySelectorAll('.chip').forEach(c => c.onclick = () => {
-  document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+document.querySelectorAll('.chip[data-f]').forEach(c => c.onclick = () => {
+  document.querySelectorAll('.chip[data-f]').forEach(x => x.classList.remove('active'));
   c.classList.add('active');
   renderQueue(c.dataset.f);
 });
@@ -842,19 +837,59 @@ function show(id){
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => show(t.dataset.view));
 document.getElementById('back-fila').onclick = () => show('fila');
 
-function openAnalysis(r){
-  document.getElementById('an-num').textContent = r.n;
-  document.getElementById('an-desc').textContent = (r.cls === "resp" ? "Recurso Especial" : "Agravo em Recurso Especial") + " · " + r.mat + " · Análise pré-processada pelo Módulo 1 em 4,2s — exemplo ilustrativo com dados fictícios.";
-  document.getElementById('decided').classList.remove('show');
-  show('analise');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+function scoreColor(s){ return s >= 60 ? "var(--green)" : s >= 35 ? "var(--amber)" : "var(--red)"; }
+
+function openDecision(r){
+  decCurrent = r;
+  document.getElementById("dec-proc").textContent = (r.cls === "resp" ? "REsp" : "AREsp") + " · " + r.n;
+  document.getElementById("dec-title").textContent = r.mat;
+  document.getElementById("dec-caso").innerHTML = CASO_TXT[r.n] || r.mat;
+  const opts = document.getElementById("dec-opts");
+  opts.innerHTML = "";
+  [["admitir","adm","Admitir e remeter ao STJ"],["negar","neg","Negar seguimento na origem"],["sobrestar","sob","Sobrestar / aguardar precedente"]]
+    .forEach(([k, c, label]) => {
+      const b = document.createElement("button");
+      b.className = "dec-opt " + c;
+      b.innerHTML = `<span class="dot"></span>${label}`;
+      b.onclick = () => pickDecision(k, b);
+      opts.appendChild(b);
+    });
+  document.getElementById("dec-result").classList.remove("show");
+  // se já decidiu antes, mostra o resultado guardado e marca a opção
+  if (myDecisions[r.n]) {
+    const sel = [...opts.children].find(b => b.className.includes(
+      myDecisions[r.n] === "admitir" ? "adm" : myDecisions[r.n] === "negar" ? "neg" : "sob"));
+    if (sel) sel.classList.add("sel");
+    showDecisionResult(r, myDecisions[r.n], true);
+  }
+  document.getElementById("dec").classList.add("open");
 }
 
-function decide(msg){
-  const d = document.getElementById('decided');
-  document.getElementById('decided-txt').textContent = msg;
-  d.classList.add('show');
-  toast("Decisão registrada com trilha de auditoria · devolutiva enviada ao Módulo 6");
+function pickDecision(k, btn){
+  document.querySelectorAll("#dec-opts .dec-opt").forEach(b => b.classList.remove("sel"));
+  btn.classList.add("sel");
+  myDecisions[decCurrent.n] = k;
+  saveDecisions();
+  showDecisionResult(decCurrent, k, false);
+  toast("Decisão registrada com trilha de auditoria · alimenta o Módulo 6");
+  renderQueue(document.querySelector('.chip[data-f].active')?.dataset.f || "all");
+}
+
+function showDecisionResult(r, k, restored){
+  const match = k === r.ia;
+  const youEl = document.getElementById("dec-you");
+  youEl.textContent = LABELS[k];
+  youEl.style.color = k === "admitir" ? "var(--green)" : k === "negar" ? "var(--red)" : "var(--amber)";
+  const iaEl = document.getElementById("dec-ia");
+  iaEl.textContent = LABELS[r.ia] + " (score " + r.score + "/100)";
+  iaEl.style.color = scoreColor(r.score);
+  const v = document.getElementById("dec-verdict");
+  v.className = "dec-verdict " + (match ? "match" : "diff");
+  v.innerHTML = match
+    ? `✓ <b>Sua decisão coincidiu com a sugestão do sistema.</b>${restored ? " (decisão já registrada)" : ""}`
+    : `↔ <b>Você decidiu “${LABELS[k]}” e o sistema sugeria “${LABELS[r.ia]}”.</b> Divergir não é errar — a decisão é sempre humana. Veja o raciocínio do sistema:`;
+  document.getElementById("dec-just").textContent = r.just;
+  document.getElementById("dec-result").classList.add("show");
 }
 
 function toast(msg){
