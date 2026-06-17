@@ -87,6 +87,12 @@
     background:var(--paper);color:var(--muted);cursor:pointer;font-family:var(--sans)}
   .chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
   table{width:100%;border-collapse:collapse;font-size:13px}
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .swipe-hint{display:none}
+  @media(max-width:760px){
+    .tbl-scroll table{min-width:680px}
+    .swipe-hint{display:block;font-size:11.5px;color:var(--gold);font-weight:600;padding:.5rem 0 .2rem;text-align:center}
+  }
   th{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;
     text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--line);background:#FCFBF7}
   td{padding:.85rem 1rem;border-bottom:1px solid #F0EEE4;vertical-align:middle}
@@ -408,12 +414,15 @@
         <button class="chip" id="reset-chip" onclick="resetDecisions()" style="margin-left:auto;border-color:var(--gold);color:var(--gold)">↺ Recomeçar</button>
       </div>
     </div>
+    <div class="swipe-hint">↔ deslize a tabela para ver todas as colunas</div>
+    <div class="tbl-scroll">
     <table>
       <thead><tr>
         <th>Processo</th><th>Classe</th><th>Matéria</th><th>Score IA de admissibilidade</th><th>Alerta</th><th>Situação</th>
       </tr></thead>
       <tbody id="queue"></tbody>
     </table>
+    </div>
   </div>
 </section>
 
