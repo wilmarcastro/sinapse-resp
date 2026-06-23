@@ -68,7 +68,7 @@
 
   .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
   .page-title{font-size:21px;font-weight:800;color:var(--navy);letter-spacing:-.01em}
-  .page-desc{font-size:13px;color:var(--muted);margin-top:.25rem;max-width:62ch}
+  .page-desc{font-size:13px;color:var(--muted);margin-top:.25rem;max-width:none;text-align:justify;text-justify:inter-word}
 
   /* CARDS / KPI */
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
@@ -307,8 +307,8 @@
     border-radius:11px;padding:.85rem 1.1rem;cursor:pointer;transition:all .15s}
   .dec-opt:hover{border-color:var(--gold);transform:translateY(-1px)}
   .dec-opt .dot{width:13px;height:13px;border-radius:50%;flex-shrink:0;border:2px solid currentColor}
-  .dec-opt.adm{color:var(--green)} .dec-opt.neg{color:var(--red)} .dec-opt.sob{color:var(--amber)}
-  .dec-opt.sel{background:#FBF6E8;border-color:var(--gold)}
+  .dec-opt.neu{color:var(--navy)}
+  .dec-opt.sel{background:#FBF6E8;border-color:var(--gold);color:var(--navy)}
   .dec-result{display:none;margin-top:1.3rem}
   .dec-result.show{display:block}
   .dec-compare{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
@@ -393,7 +393,7 @@
   <div class="page-head">
     <div>
       <div class="page-title">Fila de admissibilidade — Recursos Especiais e AREsps</div>
-      <div class="page-desc">A IA assistiva (Módulo 1) pré-analisa cada recurso recebido e sugere uma pontuação de admissibilidade com fundamentação. <strong>A decisão é sempre do analista e do vice-presidente</strong> (Res. CNJ 615/2025).<br><span style="font-size:12px"><b>Como ler o score</b> (refere-se ao recurso, não ao tribunal): <span style="color:var(--red);font-weight:600">0–34 fortes óbices → tende à negativa de seguimento</span> · <span style="color:var(--amber);font-weight:600">35–59 zona de fronteira → análise humana reforçada</span> · <span style="color:var(--green);font-weight:600">60–100 requisitos presentes → tende à admissão e remessa ao STJ</span>.<br><i>A tabela abaixo mostra 7 recursos de exemplo dos 47 pendentes hoje; os totais dos cartões referem-se ao dia. Dados fictícios para demonstração.</i><br><b style="color:var(--gold)">👆 Clique em qualquer recurso para assumir o papel de analista: decida primeiro e compare sua decisão com a da IA.</b></span></div>
+      <div class="page-desc">A IA assistiva (Módulo 1) pré-analisa cada recurso recebido e sugere uma pontuação de admissibilidade com fundamentação. <strong>A decisão é sempre do analista e do vice-presidente</strong> (Res. CNJ 615/2025).<br><span style="font-size:12px"><b>Como ler o score</b> (refere-se ao recurso, não ao tribunal): <span style="color:var(--red);font-weight:600">0–34 admissibilidade baixa</span> · <span style="color:var(--amber);font-weight:600">35–59 admissibilidade média</span> · <span style="color:var(--green);font-weight:600">60–100 admissibilidade alta</span>.<br><i>A tabela abaixo mostra 7 recursos de exemplo dos 47 pendentes hoje; os totais dos cartões referem-se ao dia. Dados fictícios para demonstração.</i><br><b style="color:var(--gold)">👆 Clique em qualquer recurso para assumir o papel de analista: decida primeiro e compare sua decisão com a da IA.</b></span></div>
     </div>
   </div>
 
@@ -450,7 +450,7 @@
           </div>
           <div class="txt">
             <strong id="score-head">Fortes indícios de inadmissibilidade</strong>
-            <span id="score-desc">O score de admissibilidade mede, de 0 a 100, o quanto <b>este recurso</b> preenche os requisitos para subir ao STJ — não avalia o tribunal. Faixas: <b style="color:var(--red)">0–34</b> fortes óbices (tende à negativa) · <b style="color:var(--amber)">35–59</b> fronteira (análise reforçada) · <b style="color:var(--green)">60–100</b> requisitos presentes (tende à admissão).</span>
+            <span id="score-desc">O score de admissibilidade mede, de 0 a 100, o quanto <b>este recurso</b> preenche os requisitos para chegar ao STJ — não avalia o tribunal. Faixas: <b style="color:var(--red)">0–34</b> admissibilidade baixa · <b style="color:var(--amber)">35–59</b> admissibilidade média · <b style="color:var(--green)">60–100</b> admissibilidade alta.</span>
           </div>
         </div>
         <div class="a-card-head">
@@ -749,11 +749,11 @@
 // ============ DADOS SIMULADOS ============
 const recursos = [
   {n:"0712345-67.2025.8.07.0001", cls:"resp", mat:"Civil — expurgos inflacionários", score:17, prec:true,  st:"pend", ia:"negar", just:"Acumula três óbices de alta confiança: ausência de prequestionamento (Súm. 282/STF), reexame de prova (Súm. 7/STJ) e tese já pacificada no Tema 1.234/STJ. Recurso fadado à inadmissão — a negativa na origem evita ~2-3 anos de tramitação inútil."},
-  {n:"0708821-43.2025.8.07.0004", cls:"aresp", mat:"Consumidor — plano de saúde", score:22, prec:true,  st:"pend", ia:"sobrestar", just:"Matéria idêntica à afetada no Tema 1.198/STJ, com julgamento pendente e suspensão nacional determinada. O sobrestamento na origem (CPC, art. 1.030, III) é o caminho — remeter agora apenas engrossaria a pilha do STJ."},
+  {n:"0708821-43.2025.8.07.0004", cls:"aresp", mat:"Consumidor — plano de saúde", score:45, prec:true,  st:"pend", ia:"sobrestar", just:"Matéria idêntica à afetada no Tema 1.198/STJ, com julgamento pendente e suspensão nacional determinada. Não se trata de avaliar o mérito do agravo agora: o recurso deve ficar suspenso na origem (CPC, art. 1.030, III) até o julgamento do repetitivo — remeter agora apenas engrossaria a pilha do STJ."},
   {n:"0701234-11.2026.8.07.0009", cls:"resp", mat:"Tributário — ISS sobre software", score:78, prec:false, st:"pend", ia:"admitir", just:"Requisitos formais presentes, questão exclusivamente de direito, divergência jurisprudencial demonstrada e sem precedente qualificado. É o recurso que merece subir ao STJ — filtrar bem não é barrar tudo."},
-  {n:"0719876-02.2025.8.07.0015", cls:"aresp", mat:"Civil — responsabilidade médica", score:31, prec:false, st:"pend", ia:"negar", just:"Score baixo: o recurso busca rediscutir matéria fático-probatória (incidência da Súm. 7/STJ). Sem questão de direito destacável, a tendência é a negativa de seguimento."},
+  {n:"0719876-02.2025.8.07.0015", cls:"aresp", mat:"Civil — responsabilidade médica", score:68, prec:false, st:"pend", ia:"remeter", just:"O agravo ataca decisão de inadmissão do recurso especial e demonstra, de forma plausível, que os óbices apontados na origem não se sustentam. Não sendo caso de retratação, o vice-presidente deve remeter o agravo ao STJ, a quem compete o juízo definitivo sobre o recurso especial (CPC, art. 1.042, §4º)."},
   {n:"0703456-78.2026.8.07.0001", cls:"resp", mat:"Administrativo — concurso público", score:64, prec:false, st:"pend", ia:"admitir", just:"Questão de direito sobre legalidade de critério de edital, com prequestionamento e divergência demonstrada. Sem óbice sumular detectado — tende à admissão."},
-  {n:"0715555-90.2025.8.07.0007", cls:"aresp", mat:"Consumidor — telefonia (Tema 989)", score:12, prec:true,  st:"pend", ia:"negar", just:"Tese diretamente contrária ao Tema 989/STJ, já julgado em repetitivo. Cabe juízo de retratação ou negativa de seguimento na origem (CPC, art. 1.030, I)."},
+  {n:"0715555-90.2025.8.07.0007", cls:"aresp", mat:"Consumidor — telefonia (Tema 989)", score:12, prec:true,  st:"pend", ia:"naoconhecer", just:"O acórdão recorrido está alinhado ao Tema 989/STJ, já julgado sob o rito dos repetitivos. Quando a decisão de origem está em conformidade com o precedente qualificado, não cabe agravo para destrancar o especial: o vice-presidente deve não conhecer do AREsp (CPC, art. 1.042, caput)."},
   {n:"0709090-33.2026.8.07.0002", cls:"resp", mat:"Empresarial — recuperação judicial", score:55, prec:false, st:"pend", ia:"sobrestar", just:"Zona de fronteira: há questão de direito relevante, mas parte da controvérsia tangencia tema em afetação. Recomenda-se análise humana reforçada antes de decidir entre admitir e sobrestar."},
 ];
 
@@ -792,7 +792,15 @@ function resetDecisions(){
   renderQueue(document.querySelector('.chip.active')?.dataset.f || "all");
   toast("Decisões apagadas. Fila reiniciada.");
 }
-const LABELS = { admitir: "Admitir e remeter", negar: "Negar seguimento", sobrestar: "Sobrestar / aguardar" };
+const LABELS = {
+  admitir: "Admitir e remeter", negar: "Negar seguimento", sobrestar: "Sobrestar / aguardar",
+  remeter: "Remeter ao STJ", retratar: "Juízo de retratação", naoconhecer: "Não conhecer do AREsp"
+};
+// conjuntos de opções por classe de recurso
+const OPCOES = {
+  resp: [["admitir","neu","Admitir e remeter ao STJ"],["negar","neu","Negar seguimento na origem"],["sobrestar","neu","Sobrestar / aguardar precedente"]],
+  aresp: [["remeter","neu","Remeter ao STJ"],["naoconhecer","neu","Não conhecer do AREsp"],["retratar","neu","Em juízo de retratação, admitir o REsp e encaminhar ao STJ"],["sobrestar","neu","Sobrestar / aguardar precedente"]]
+};
 const CASO_TXT = {
   "0712345-67.2025.8.07.0001": "Recurso especial <b>sem prequestionamento</b> da questão federal; as razões pedem reexame do laudo pericial; a tese central coincide com o <b>Tema 1.234/STJ</b>, já julgado em repetitivo.",
   "0708821-43.2025.8.07.0004": "Agravo em recurso especial sobre cobertura de plano de saúde — matéria <b>idêntica à afetada no Tema 1.198/STJ</b>, com julgamento pendente e <b>suspensão nacional</b> determinada.",
@@ -813,8 +821,11 @@ function renderQueue(filter = "all"){
       const cls = r.score >= 60 ? "s-high" : r.score >= 35 ? "s-mid" : "s-low";
       const tr = document.createElement('tr');
       const mine = myDecisions[r.n];
-      const tagCls = mine === "admitir" ? "adm" : mine === "negar" ? "neg" : "sob";
-      const statusTxt = mine === "admitir" ? "Admitiu" : mine === "negar" ? "Negou" : mine === "sobrestar" ? "Sobrestou" : "";
+      const tagCls = (mine === "admitir" || mine === "remeter" || mine === "retratar") ? "adm"
+                   : (mine === "negar" || mine === "naoconhecer") ? "neg"
+                   : mine === "sobrestar" ? "sob" : "";
+      const STATUS_TXT = { admitir:"Admitiu", negar:"Negou", sobrestar:"Sobrestou", remeter:"Remeteu", retratar:"Retratou", naoconhecer:"Não conheceu" };
+      const statusTxt = STATUS_TXT[mine] || "";
       tr.className = "row" + (mine ? " done-mine" : "");
       tr.innerHTML = `
         <td class="proc">${r.n}</td>
@@ -855,8 +866,7 @@ function openDecision(r){
   document.getElementById("dec-caso").innerHTML = CASO_TXT[r.n] || r.mat;
   const opts = document.getElementById("dec-opts");
   opts.innerHTML = "";
-  [["admitir","adm","Admitir e remeter ao STJ"],["negar","neg","Negar seguimento na origem"],["sobrestar","sob","Sobrestar / aguardar precedente"]]
-    .forEach(([k, c, label]) => {
+  (OPCOES[r.cls] || OPCOES.resp).forEach(([k, c, label]) => {
       const b = document.createElement("button");
       b.className = "dec-opt " + c;
       b.innerHTML = `<span class="dot"></span>${label}`;
@@ -866,9 +876,9 @@ function openDecision(r){
   document.getElementById("dec-result").classList.remove("show");
   // se já decidiu antes, mostra o resultado guardado e marca a opção
   if (myDecisions[r.n]) {
-    const sel = [...opts.children].find(b => b.className.includes(
-      myDecisions[r.n] === "admitir" ? "adm" : myDecisions[r.n] === "negar" ? "neg" : "sob"));
-    if (sel) sel.classList.add("sel");
+    const optList = OPCOES[r.cls] || OPCOES.resp;
+    const idx = optList.findIndex(o => o[0] === myDecisions[r.n]);
+    if (idx >= 0 && opts.children[idx]) opts.children[idx].classList.add("sel");
     showDecisionResult(r, myDecisions[r.n], true);
   }
   document.getElementById("dec").classList.add("open");
@@ -884,11 +894,17 @@ function pickDecision(k, btn){
   renderQueue(document.querySelector('.chip[data-f].active')?.dataset.f || "all");
 }
 
+function decColor(k){
+  if (k === "admitir" || k === "remeter" || k === "retratar") return "var(--green)";
+  if (k === "negar" || k === "naoconhecer") return "var(--red)";
+  return "var(--amber)"; // sobrestar
+}
+
 function showDecisionResult(r, k, restored){
   const match = k === r.ia;
   const youEl = document.getElementById("dec-you");
   youEl.textContent = LABELS[k];
-  youEl.style.color = k === "admitir" ? "var(--green)" : k === "negar" ? "var(--red)" : "var(--amber)";
+  youEl.style.color = decColor(k);
   const iaEl = document.getElementById("dec-ia");
   iaEl.textContent = LABELS[r.ia] + " (score " + r.score + "/100)";
   iaEl.style.color = scoreColor(r.score);
